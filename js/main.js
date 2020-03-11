@@ -13,8 +13,9 @@ var referenceRegex = /(#[0-9]*)/gi;
         if (event.shiftKey && event.keyCode == 13 &&
             value != '' && value != null) {
             var message = $.trim($('#chat-input').val());
-            appendReferences(message);
-            $('#messages').append(generateChatMsg(message));
+            var actionMessage = detectActions(message);
+            appendReferences(actionMessage);
+            $('#messages').append(generateChatMsg(actionMessage));
             $('#chat-input').val('');
             $('#chat-input').focus();
         }
@@ -23,6 +24,8 @@ var referenceRegex = /(#[0-9]*)/gi;
     $('#sidebarCollapse').on('click', function() {
         $('#sidebar').toggleClass('active');
     });
+
+    // $('#img-upload').fileupload();
 
 })(jQuery);
 
@@ -38,12 +41,17 @@ generateChatMsg = function(message) {
 }
 
 appendReferences = function(message) {
-    var references = message.match(referenceRegex);
+    var references = message.match(referenceRegex) || [];
     references.forEach(ref => {
         var cleanRef = ref.replace('#', '');
         var referencedEl = $(`#msg-header-${cleanRef}`);
         referencedEl.append(makeRef());
     });
+}
+
+detectActions = function(message) {
+    console.log(message.replace(/(\*+)(\s*\b)([^\*]*)(\b\s*)(\*+)/gi, '<i>$&</i>'))
+    return message.replace(/(\*+)(\s*\b)([^\*]*)(\b\s*)(\*+)/gi, '<i>$&</i>').replace(/\*/g, '');
 }
 
 makeRef = function() {

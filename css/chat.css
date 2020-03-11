@@ -40,6 +40,7 @@ html {
     max-width: 75%;
     position: fixed;
     bottom: 0;
+    vertical-align: top;
 }
 
 textarea {
@@ -62,4 +63,11 @@ textarea:focus {
 textarea:[placeholder] {
     font-style: italic;
     font-size: 0.875rem;
+}
+
+#action-btns {
+    vertical-align: top;
+    margin-bottom: 20px;
+    padding-bottom: 40px;
+    flex-direction: column;
 }

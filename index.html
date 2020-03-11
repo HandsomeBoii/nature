@@ -61,7 +61,15 @@
                 </div>
             </div>
             <div class="wrapper">
-                <textarea name="the-textarea" id="chat-input" maxlength="300" placeholder="Start Typin..." autofocus></textarea>
+                <span>
+                    <textarea name="the-textarea" id="chat-input" maxlength="300" placeholder="Start Typin..." autofocus></textarea>
+                </span>
+                <span id="action-btns">
+                    <div style="flex-direction: column;">
+                        <button>Post</button>
+                        <button id="img-upload">Upload</button>
+                    </div>
+                </span>
             </div>
         </div>
     </div>
@@ -70,6 +78,7 @@
     <script src="js/popper.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/main.js"></script>
+    <script src="node_modules/blueimp-file-upload/js/jquery.fileupload.js"></script>
 </body>
 
 </html>

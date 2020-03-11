@@ -8,7 +8,7 @@ var referenceRegex = /(#[0-9]*)/gi;
 
     $('#sidebar').toggleClass('active');
 
-    $('.msg-id').dblclick(function() {
+    $('body').on('dblclick', 'a.msg-id', function() {
         var id = $.trim($(this).html());
         $('#chat-input')
             .val(function() {

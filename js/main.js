@@ -8,6 +8,17 @@ var referenceRegex = /(#[0-9]*)/gi;
 
     $('#sidebar').toggleClass('active');
 
+    $('.msg-id').dblclick(function() {
+        var id = $.trim($(this).html());
+        $('#chat-input')
+            .val(function() {
+                return ($(this).val() === '' || $(this).val() === undefined) ?
+                    `${$(this).val()}${id}\n` :
+                    `${$(this).val()}\n${id}\n`;
+            })
+            .focus();
+    });
+
     $('#chat-input').keyup(function(event) {
         var value = $.trim($('#chat-input').val());
         if (event.shiftKey && event.keyCode == 13 &&
@@ -20,6 +31,10 @@ var referenceRegex = /(#[0-9]*)/gi;
             $('#chat-input').focus();
         }
     });
+
+    // $('#chat-input').change(function(event) {
+    //     $('#chat-input').val(detectActions($('#chat-input').val()));
+    // });
 
     $('#sidebarCollapse').on('click', function() {
         $('#sidebar').toggleClass('active');
@@ -34,7 +49,7 @@ generateChatMsg = function(message) {
     return `<div class="chat-message">
         <div id="msg-header-${messageCounter}">
             <span class="username"> ${userName} </span> |
-            <span> Msg. <a href="#"> #${messageCounter++} </a> </span> |
+            <span> Msg. <a href="#" class="msg-id" id="msg-id-${messageCounter}"> #${messageCounter++} </a> </span> |
         </div>
         <div class="message-body">${newMsg}</div>
     </div>`;
@@ -50,7 +65,6 @@ appendReferences = function(message) {
 }
 
 detectActions = function(message) {
-    console.log(message.replace(/(\*+)(\s*\b)([^\*]*)(\b\s*)(\*+)/gi, '<i>$&</i>'))
     return message.replace(/(\*+)(\s*\b)([^\*]*)(\b\s*)(\*+)/gi, '<i>$&</i>').replace(/\*/g, '');
 }
 

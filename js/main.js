@@ -24,13 +24,29 @@ var referenceRegex = /(#[0-9]*)/gi;
         if (event.shiftKey && event.keyCode == 13 &&
             value != '' && value != null) {
             var message = $.trim($('#chat-input').val());
-            var actionMessage = detectActions(message);
-            appendReferences(actionMessage);
-            $('#messages').append(generateChatMsg(actionMessage));
-            $('#chat-input').val('');
-            $('#chat-input').focus();
+
+            var newMsg = generateChatMsg(message);
+            if (newMsg) {
+                $('#messages').append(newMsg);
+            }
+
+            $('#chat-input').val('').focus();
+            messageCounter++;
         }
     });
+
+    // $('#file-input').change(function() {
+    //     const file = this.files[0];
+    //     if (file) {
+    //         const reader = new FileReader();
+    //         reader.addEventListener('load', function() {
+    //             console.log(this);
+    //             $('#test-img').attr('src', this.result);
+    //         });
+    //         reader.readAsDataURL(file);
+    //     }
+    //     console.log(file);
+    // });
 
     // $('#chat-input').change(function(event) {
     //     $('#chat-input').val(detectActions($('#chat-input').val()));
@@ -40,19 +56,65 @@ var referenceRegex = /(#[0-9]*)/gi;
         $('#sidebar').toggleClass('active');
     });
 
-    // $('#img-upload').fileupload();
+    // TODO: next pass
+    // $('.msg-image').on('click', function() {
+    //     console.log('hello')
+    //     $(this).toggleClass('msg-image-lg');
+    // });
 
 })(jQuery);
 
+generateImage = function(messageCounter) {
+    var image = $('#file-input').prop('files')[0];
+    if (image) {
+        const reader = new FileReader();
+        reader.addEventListener('load', function() {
+            console.log(this.result)
+            const id = `img-${messageCounter}`;
+            console.log(id);
+            console.log($(id));
+            // $(id).attr('src', this.result);
+        });
+        reader.readAsDataURL(image);
+        $('#file-input').val('');
+    }
+}
+
 generateChatMsg = function(message) {
-    var newMsg = message.replace(/(#[0-9]*)/gi, '<a href="#">$&</a>');
+    // Message creation logic
+    var actionMessage = detectActions(message);
+    appendReferences(actionMessage);
+    var newMsg = actionMessage.replace(/(#[0-9]*)/gi, '<a href="#">$&</a>');
+
+    // Check image upload
+    var image = $('#file-input').prop('files')[0];
+    if (image) {
+        const reader = new FileReader();
+        reader.addEventListener('load', function() {
+            // Generate message here with image
+            const msg = getChatHtml(newMsg, this.result);
+            $('#messages').append(msg);
+        });
+        reader.readAsDataURL(image);
+        $('#file-input').val('');
+    } else {
+        // Message with no image
+        return getChatHtml(newMsg);
+    }
+}
+
+getChatHtml = function(message, imageSrc) {
     return `<div class="chat-message">
         <div id="msg-header-${messageCounter}">
             <span class="username"> ${userName} </span> |
-            <span> Msg. <a href="#" class="msg-id" id="msg-id-${messageCounter}"> #${messageCounter++} </a> </span> |
+            <span> Msg. <a href="#" class="msg-id" id="msg-id-${messageCounter}"> #${messageCounter} </a> </span> |
         </div>
-        <div class="message-body">${newMsg}</div>
-    </div>`;
+        <div class="message-body">${!!imageSrc ? getImageHtml(messageCounter, imageSrc) : ''}<span>${message}</span></div>
+        </div>`;
+}
+
+getImageHtml = function(messageCounter, imageSrc) {
+    return `<span><img src="${imageSrc}" alt="image" class="msg-image" id="img-${messageCounter}"></span>`;
 }
 
 appendReferences = function(message) {

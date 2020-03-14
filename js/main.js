@@ -19,6 +19,11 @@ var referenceRegex = /(#[0-9]*)/gi;
             .focus();
     });
 
+    $('body').on('click', 'img.msg-image', function() {
+        console.log('hello')
+        $(this).toggleClass('msg-image-lg');
+    });
+
     $('#chat-input').keyup(function(event) {
         var value = $.trim($('#chat-input').val());
         if (event.shiftKey && event.keyCode == 13 &&
@@ -28,57 +33,18 @@ var referenceRegex = /(#[0-9]*)/gi;
             var newMsg = generateChatMsg(message);
             if (newMsg) {
                 $('#messages').append(newMsg);
+                messageCounter++;
             }
 
             $('#chat-input').val('').focus();
-            messageCounter++;
         }
     });
-
-    // $('#file-input').change(function() {
-    //     const file = this.files[0];
-    //     if (file) {
-    //         const reader = new FileReader();
-    //         reader.addEventListener('load', function() {
-    //             console.log(this);
-    //             $('#test-img').attr('src', this.result);
-    //         });
-    //         reader.readAsDataURL(file);
-    //     }
-    //     console.log(file);
-    // });
-
-    // $('#chat-input').change(function(event) {
-    //     $('#chat-input').val(detectActions($('#chat-input').val()));
-    // });
 
     $('#sidebarCollapse').on('click', function() {
         $('#sidebar').toggleClass('active');
     });
 
-    // TODO: next pass
-    // $('.msg-image').on('click', function() {
-    //     console.log('hello')
-    //     $(this).toggleClass('msg-image-lg');
-    // });
-
 })(jQuery);
-
-generateImage = function(messageCounter) {
-    var image = $('#file-input').prop('files')[0];
-    if (image) {
-        const reader = new FileReader();
-        reader.addEventListener('load', function() {
-            console.log(this.result)
-            const id = `img-${messageCounter}`;
-            console.log(id);
-            console.log($(id));
-            // $(id).attr('src', this.result);
-        });
-        reader.readAsDataURL(image);
-        $('#file-input').val('');
-    }
-}
 
 generateChatMsg = function(message) {
     // Message creation logic
@@ -94,6 +60,7 @@ generateChatMsg = function(message) {
             // Generate message here with image
             const msg = getChatHtml(newMsg, this.result);
             $('#messages').append(msg);
+            messageCounter++;
         });
         reader.readAsDataURL(image);
         $('#file-input').val('');
